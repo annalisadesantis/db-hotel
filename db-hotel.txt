@@ -108,11 +108,53 @@ ORDER BY num_prenotazioni DESC
 
 
 ●Stampare tutti gli ospiti per ogni prenotazione
+SELECT p.prenotazione_id, o.name, o.lastname
+FROM ospiti AS o
+JOIN prenotazioni_has_ospiti AS p
+ON o.id = p.ospite_id
+
+
+SELECT *    
+FROM prenotazioni_has_ospiti     
+JOIN ospiti    
+ON ospiti.id = prenotazioni_has_ospiti.ospite_id
+ORDER BY `prenotazioni_has_ospiti`.`prenotazione_id` ASC
 
 
 
+●Stampare Nome, Cognome, Prezzo e Pagante per tutte le prenotazioni fatte a Maggio 2018
+SELECT  pagamenti.id AS ID_PAGAMENTO, pagamenti.price AS prezzo, paganti.name AS nome_pagante , paganti.lastname AS cognome_pagante ,MONTH(prenotazioni.created_at) AS maggio, ospiti.name AS nome_ospite, ospiti.lastname AS cognome_ospite
+FROM pagamenti
+JOIN paganti
+ON pagamenti.pagante_id = paganti.id
+JOIN prenotazioni
+ON prenotazioni.id = pagamenti.prenotazione_id
+JOIN prenotazioni_has_ospiti
+ON prenotazioni_has_ospiti.prenotazione_id = prenotazioni.id
+JOIN ospiti
+ON prenotazioni_has_ospiti.ospite_id = ospiti.id
+WHERE MONTH(prenotazioni.created_at) = 5
 
-●Stampare Nome, Cognome, Prezzo e Pagante per tutteleprenotazioni fatte a Maggio 2018
-●Fai la somma di tutti i prezzi delle prenotazioniper le stanze delprimo piano
-●Prendi i dati di fatturazione per la prenotazionecon id=7
-●Lestanzesonostatetutteprenotatealmenounavolta?(Visualizzarelestanzenonancoraprenotate)
+
+●Fai la somma di tutti i prezzi delle prenotazioni per le stanze del primo piano
+SELECT SUM(pagamenti.price) AS totale_somma_stanze_primo_piano 
+FROM stanze 
+JOIN prenotazioni 
+ON stanze.id = prenotazioni.stanza_id 
+JOIN pagamenti 
+ON pagamenti.prenotazione_id = prenotazioni.id 
+WHERE floor = 1 AND pagamenti.status = 'accepted'
+
+
+●Prendi i dati di fatturazione per la prenotazione con id=7
+SELECT paganti.name AS nome_pagante, paganti.lastname AS cognome_pagante, paganti.address AS indirizzo_pagante, pagamenti.id AS numero_identificativo_pagamento
+FROM `prenotazioni`
+JOIN pagamenti
+ON prenotazioni.id = pagamenti.prenotazione_id
+JOIN paganti
+ON pagamenti.pagante_id = paganti.id
+WHERE pagamenti.id = 7
+
+
+●Le stanze sono state tutte prenotate almeno una volta?
+(Visualizzare le stanze non ancora prenotate)
