@@ -158,3 +158,8 @@ WHERE pagamenti.id = 7
 
 ●Le stanze sono state tutte prenotate almeno una volta?
 (Visualizzare le stanze non ancora prenotate)
+SELECT stanze.id AS id_stanza, stanze.room_number AS numuro_stanza, stanze.floor AS piano_stanza 
+FROM stanze 
+LEFT JOIN prenotazioni 
+ON stanze.id = prenotazioni.stanza_id 
+WHERE prenotazioni.stanza_id IS NULL
